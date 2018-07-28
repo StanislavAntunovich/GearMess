@@ -12,13 +12,13 @@ GearMess - это простой мессенджер для обмена соо
 
 ### Установка
 
-    pip install GearMess
+    comming soon
 
 ### Запуск
 Запуск сервера:
 
-    cooming soon
+    coming soon
     
 Запуск клиента:
 
-    cooming soon
+    coming soon
