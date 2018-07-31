@@ -15,7 +15,6 @@ class Jim:
         if ACTION in params:
             actions = JimAction(self.name)
             action = params.pop(ACTION)
-            print(action)
             action_mess = actions.actions[action](**params)
             return action_mess
         elif RESPONSE in params:

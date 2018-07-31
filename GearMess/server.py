@@ -1,4 +1,8 @@
-from socket import socket, AF_INET, SOCK_STREAM
+""" Simple echo-server_src. Making socket. Forwarding messages from clients to every-listening.
+        Takes ADDRESS and PORT to listen from on initialisation as required.
+        Takes time_out=0.2, buf_size=2048, max_clients=15, code_format='UTF-8' as not required."""
+
+from socket import socket, AF_INET, SOCK_STREAM, timeout
 from os import urandom
 from queue import Queue
 from threading import Thread
@@ -16,6 +20,9 @@ class Server:
         Takes time_out=0.2, buf_size=2048, max_clients=15, code_format='UTF-8' as not required"""
 
     def __init__(self, address, port_, time_out=0.2, buf_size=2048, max_clients=15, code_format='UTF-8'):
+        """ :param address: address to listen from, :type: string, example '192.168.1.1'
+            :param port_: port to listen from, :type: int, example 7777
+        """
         self.addr = address, port_
         self.soc = None
 
@@ -42,13 +49,14 @@ class Server:
         self.chat_messages_thread = Thread(target=self.send_chat_messages)
 
     def listen(self):
-        """ Making socket, setting timeout, listening from initialised parameters"""
+        """ To make socket using initialised parameters"""
         self.soc = socket(AF_INET, SOCK_STREAM)
         self.soc.bind(self.addr)
         self.soc.settimeout(self._timeout)
         self.soc.listen(self._clients_count)
 
     def send_chat_messages(self):
+        """ Method to use in thread to send chat-messages. """
         while self._is_alive:
             try:
                 message = self.chats_messages.get()
@@ -60,6 +68,8 @@ class Server:
                     user.send(bmessage)
 
     def send_addressed_messages(self):
+        """ To send addressed messages, tacking message from queue and sending it if user is on-line,
+        if not - puts it back to queue"""
         while self._is_alive:
             try:
                 message = self.addressed_messages.get()
@@ -77,28 +87,32 @@ class Server:
                     self.addressed_messages.put(message)
 
     def _accept(self):
-        """ Adding connected clients to list"""
+        """ Handle every connected user. """
         try:
             conn, addr = self.soc.accept()
         except OSError:
             pass
         else:
-            self.connected_clients.append(conn)
+            self.connected_clients.append(conn)  # а оно теперь нужно?
             Thread(target=self.handle_conn, args=(conn,)).start()
 
     def handle_conn(self, conn):
+        """
+        Using in thread to receive every request from certain user and initiate handling of each.
+        :param conn: - socket of connected user :type: socket.
+        """
         while conn in self.connected_clients:
             try:
                 message = conn.recv(self._buf_size)
 
-            except:
+            except timeout:
                 pass
             else:
-                self.handler.handle(message, conn)
-        print('finished')
+                if message:
+                    self.handler.handle(message, conn)
 
     def run(self):
-        """ Runs echo-server_src. """
+        """ To start server working. """
         self._is_alive = True
         self.listen()
         self.addressed_messages_thread.start()

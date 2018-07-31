@@ -29,11 +29,10 @@ import queue
 import threading
 from time import sleep
 
-from GearMess.client_src._client import Client
+from GearMess.client_src.client import Client
 from GearMess.JIM.jim_config import *
 
 from GearMess.client_src.client_views import Ui_Dialog, Ui_MainWindow
-
 
 
 class LoginPage(QtWidgets.QDialog, Ui_Dialog):
@@ -230,6 +229,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     message_to_ins = '<span style=\" color: black;\">{}- {}: {}</span><br>'. \
                         format(message[TIME], message[FROM], message[MESSAGE])
                 self.ChatBrowser.insertHtml(message_to_ins)
+        self.ChatBrowser.ensureCursorVisible()
 
     def dialog_to_del_contact(self, name):
         textPattern = 'Are you sure to delete "{}"?'.format(name)
@@ -249,16 +249,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Если приходит сообщение не от того с кем мы в данный момент общаемся - подсвечивает его в списке зеленым"""
         self._online = True
         while self._online:
-            try:
-                message = self.user.receive()
-            except:
-                pass
-            else:
+            message = self.user.receive()
+            if message:
                 # разгрести это нагромождение!!!
                 if message.get(MESSAGE):
                     self.incomeMessageSignal.emit(message)
                     if message[FROM] != self.user.name and message[FROM] == self._chat_with:
                         self.ChatBrowser.insertPlainText('{}: {}'.format(message[FROM], message[MESSAGE]) + '\n')
+                        self.ChatBrowser.ensureCursorVisible()
                     else:
                         cont = self.contactsListWidget.findItems(message[FROM], QtCore.Qt.MatchExactly)
                         if cont:
