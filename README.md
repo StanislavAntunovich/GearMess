@@ -8,17 +8,26 @@ GearMess - это простой мессенджер для обмена соо
  * графический интерфейс
  * добавление/удаление контактов
  * возможность покинуть чат
+ * шифрование паролей и сообщений
 
 
-### Установка
+### Установка сервера
 
-    pip install GearMess
+    pip install GearMess-server
+    
+### Установка клиента
+
+    pip install GearMess-client
 
 ### Запуск
 Запуск сервера:
 
-    cooming soon
+    console_server <ip-addres> <port>
     
-Запуск клиента:
+Запуск gui клиента:
 
-    cooming soon
+    giu_client
+
+Запуск консольного клиента
+    
+    console_client
