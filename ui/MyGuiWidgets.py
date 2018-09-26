@@ -99,7 +99,6 @@ class MyListWidget(QtWidgets.QListWidget):
     def addItem(self, *__args):
         item = MyListItem(*__args)
         super().addItem(item)
-        print(item.sizeHint())
         return item
 
 
@@ -108,7 +107,7 @@ class MyListItem(QtWidgets.QListWidgetItem):
         super().__init__(parent)
         self.messages_count = 0
         self.in_contacts = False
-        # self.setSizeHint(QtCore.QSize(-1, STRING_HIGH))
+        self.setSizeHint(QtCore.QSize(-1, STRING_HIGH))
 
 
 class MyTextEditWidget(QtWidgets.QTextEdit):

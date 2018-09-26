@@ -11,7 +11,7 @@ from ui.main_window import Ui_MainWindow
 SELF_MESSAGES_COLOR = 'gray'
 OTHER_MESSAGES_COLOR = 'black'
 
-HTML_MESSAGE_PATTERN = '<span style=\" color: {};\">{} - {}: {}</span><br>'
+HTML_MESSAGE_PATTERN = '<span style=" color: {}"; >{} - {}: {}</span><br>'
 
 
 # TODO: для экономии ресурсов, после удачной регистрации/логина, удалять классы WelcomeWidget, LoginDataWidget,
@@ -120,7 +120,7 @@ class LoginDataWidget(QtWidgets.QWidget):
         password = self.passwordLineEdit.text()
         if login and password:
             self.ok_button_signal.emit(self.action, login, password)
-            self.loginLineEdit.clear()
+            self.passwordLineEdit.clear()
         else:
             self.message_boxes('info', 'not enough info', 'please fill all fields')
 
@@ -158,10 +158,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.user = user
-        self.chat_with = None
+        self.chat_with = '#all'
 
         self.service_queue = Queue()
         self.receiver = Receiver(self.service_queue, self.user, self)
+        self.receiver.new_message_signal.connect(self.incoming_messages)
+
         self.infoBoxes = MessageBoxes(self)
 
         self.contactsListWidget.itemDoubleClicked.connect(self.contacts_list_double_click)
@@ -174,11 +176,23 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.messageSendTextEdit.send_message_signal.connect(self.outgoing_message)
         self.sendMessagePushButton.clicked.connect(self.outgoing_message)
-        self.receiver.new_message_signal.connect(self.incoming_messages)
 
         self.contactsListWidget.itemSelectionChanged.connect(self.set_buttons_box)
 
+        self.emojiButton.clicked.connect(self.emoji_clicked)
+        self.emojiList.installEventFilter(self)
+
         self.on_start()
+
+    def emoji_clicked(self):
+        if self.emojiList.isVisible():
+            self.emojiList.hide()
+            self.messageSendTextEdit.setFocus()
+        else:
+            self.emojiList.show()
+            pos = self.emojiButton.mapToGlobal(QtCore.QPoint(self.emojiButton.x() + 20, self.emojiButton.y() + 25))
+            self.emojiList.move(pos)
+            self.emojiList.setFocus()
 
     def set_contacts_count_label(self, count=None):
         contacts_count = self.contactsListWidget.count() if not count else count
@@ -201,7 +215,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.userNameLabel.setText(name)
 
     def outgoing_message(self, message=None):
-        message_to_send = self.messageSendTextEdit.toPlainText() if not message else message
+        message_to_send = self.messageSendTextEdit.toHtml() if not message else message
         message_to_ins = HTML_MESSAGE_PATTERN.format(SELF_MESSAGES_COLOR, time.ctime(), self.user.name, message_to_send)
         self.ChatBrowser.insertHtml(message_to_ins)
         self.ChatBrowser.ensureCursorVisible()
@@ -220,10 +234,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if message.get(FROM) in (self.user.name, self.chat_with):
             color = colors[message[FROM]]
             message_to_ins = HTML_MESSAGE_PATTERN.format(color, message[TIME], message[FROM], message[MESSAGE])
-
-            # sm = join(abspath('.'), 'ui', 'numbers_icons', 'смайл.png')
-            # self.ChatBrowser.insertHtml('<img src="{}" />'.format(sm))
-
             self.ChatBrowser.insertHtml(message_to_ins)
             self.ChatBrowser.ensureCursorVisible()
         else:
@@ -275,6 +285,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.get_contacts()
         self.user.send_presence()
         self.set_user_name(self.user.name)
+
+    # TODO: понять почему при первом клике на эмоджик лист прячется, при повторном нет (только при потере фокуса)
+    def eventFilter(self, object_, event):
+        if object_ is self.emojiList and event.type() == 9:
+            self.emojiList.hide()
+        return super().eventFilter(object_, event)
 
 
 class ClientGui:
