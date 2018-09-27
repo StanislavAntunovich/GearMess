@@ -7,6 +7,58 @@ NON_CONTACT_BACKGROUND_COLOR = 'yellow'
 NO_COLOR = 'white'
 
 
+class EmojiListWidget(QtWidgets.QListWidget):
+    emojiClicked = QtCore.pyqtSignal(str)
+
+    _EMOJI_HTML_PATTERN = '<img src="{}" width="20" height="20">'
+
+    def __init__(self, parent=None, emoji_dir_path=None, emoji_size=(22, 22)):
+        super().__init__(parent)
+        self.emoji_size = QtCore.QSize(*emoji_size)
+
+        self.setWindowFlags(QtCore.Qt.ToolTip)
+        self.setLayoutMode(QtWidgets.QListView.Batched)
+        self.setViewMode(QtWidgets.QListView.IconMode)
+        self.setFixedSize(QtCore.QSize(222, 154))
+        self.setWrapping(True)
+
+        if emoji_dir_path:
+            self.buildList(emoji_dir_path)
+
+    def buildList(self, path=None):
+        # TODO: сделать через os.path.abspath
+        emojis_paths = QtCore.QDirIterator(path, {"*.png"})
+
+        while emojis_paths.hasNext():
+            icon_path = emojis_paths.next()
+            emoji_tool_button = QtWidgets.QToolButton(self)
+            emoji_tool_button.setIcon(QtGui.QIcon(icon_path))
+            emoji_tool_button.setFixedSize(self.emoji_size)
+            emoji_tool_button.setStyleSheet("QToolButton { border: none }")
+            self._createConnection(icon_path, emoji_tool_button)
+
+    def _createConnection(self, emoji_path, emoji_button):
+        emoji_item = QtWidgets.QListWidgetItem()
+        emoji_item.setSizeHint(emoji_button.sizeHint())
+        self.addItem(emoji_item)
+        self.setItemWidget(emoji_item, emoji_button)
+        emoji_button.clicked.connect(
+            lambda: self.emojiClicked.emit(self._EMOJI_HTML_PATTERN.format(emoji_path))
+        )
+
+    # TODO: понять почему при первом клике на эмоджик лист прячется, при повторном нет (только при потере фокуса)
+    def focusOutEvent(self, event):
+        if self.isVisible():
+            self.hide()
+        event.accept()
+
+    def show(self):
+        position = self.parent().mapToGlobal(QtCore.QPoint(self.parent().x() + 20, self.parent().y() + 25))
+        self.move(position)
+        super().show()
+        self.setFocus()
+
+
 class MyListWidget(QtWidgets.QListWidget):
     del_contact_signal = QtCore.pyqtSignal(str)
     add_contact_signal = QtCore.pyqtSignal(str)
@@ -122,3 +174,51 @@ class MyTextEditWidget(QtWidgets.QTextEdit):
             if event_.shortcutId() == self.send_message_shortcut_id:
                 self.send_message_signal.emit()
         return super().event(event_)
+
+
+class MessageBoxes:
+    # TODO: добавить в методы возможность изменять кнопки (example: info пароль слишком короткий: изменить, продолжить)
+    def __init__(self, parent=None):
+        self.question_box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question, 'are you sure?', '???',
+                                                  buttons=QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
+                                                  parent=parent)
+        self.warning_box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning, 'oops', '!!!',
+                                                 buttons=QtWidgets.QMessageBox.Ok, parent=parent)
+        self.error_box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'auch', '!!!',
+                                               buttons=QtWidgets.QMessageBox.Ok, parent=parent)
+        self.info_box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'info', 'info',
+                                              buttons=QtWidgets.QMessageBox.Ok, parent=parent)
+
+    def make_question_box(self, title, text):
+        self.question_box.setWindowTitle(title)
+        self.question_box.setText(text)
+        choice = self.question_box.exec()
+        if choice == QtWidgets.QMessageBox.Yes:
+            return True
+        else:
+            return False
+
+    def make_warning_box(self, title, text):
+        self.warning_box.setWindowTitle(title)
+        self.warning_box.setText(text)
+        self.warning_box.exec()
+
+    def make_error_box(self, title, text):
+        self.error_box.setWindowTitle(title)
+        self.error_box.setText(text)
+        self.error_box.exec()
+
+    def make_info_box(self, title, text):
+        self.info_box.setWindowTitle(title)
+        self.info_box.setText(text)
+        self.info_box.exec()
+
+    def __call__(self, box_type, title, text):
+        if box_type == 'question':
+            return self.make_question_box(title, text)
+        elif box_type == 'warning':
+            return self.make_warning_box(title, text)
+        elif box_type == 'error':
+            return self.make_error_box(title, text)
+        elif box_type == 'info':
+            return self.make_info_box(title, text)
