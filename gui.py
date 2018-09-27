@@ -1,21 +1,20 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from queue import Queue
-import sys
+
 import time
-from os.path import join, abspath
+import sys
 
 from JIM.jim_config import *
 from client_src.client import Client
 from ui.main_window import Ui_MainWindow
+
+from ui.MyGuiWidgets import EmojiListWidget, MessageBoxes
 
 SELF_MESSAGES_COLOR = 'gray'
 OTHER_MESSAGES_COLOR = 'black'
 
 HTML_MESSAGE_PATTERN = '<span style=" color: {}"; >{} - {}: {}</span><br>'
 
-
-# TODO: для экономии ресурсов, после удачной регистрации/логина, удалять классы WelcomeWidget, LoginDataWidget,
-# TODO: и LoginDialogWindow
 
 class Receiver(QtCore.QThread):
     new_message_signal = QtCore.pyqtSignal(dict)
@@ -35,54 +34,6 @@ class Receiver(QtCore.QThread):
                     self.new_message_signal.emit(message)
                 else:
                     self.service_queue.put(message)
-
-
-class MessageBoxes:
-    # TODO: добавить в методы возможность изменять кнопки (example: info пароль слишком короткий: изменить, продолжить)
-    def __init__(self, parent=None):
-        self.question_box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Question, 'are you sure?', '???',
-                                                  buttons=QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-                                                  parent=parent)
-        self.warning_box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning, 'oops', '!!!',
-                                                 buttons=QtWidgets.QMessageBox.Ok, parent=parent)
-        self.error_box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'auch', '!!!',
-                                               buttons=QtWidgets.QMessageBox.Ok, parent=parent)
-        self.info_box = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'info', 'info',
-                                              buttons=QtWidgets.QMessageBox.Ok, parent=parent)
-
-    def make_question_box(self, title, text):
-        self.question_box.setWindowTitle(title)
-        self.question_box.setText(text)
-        choice = self.question_box.exec()
-        if choice == QtWidgets.QMessageBox.Yes:
-            return True
-        else:
-            return False
-
-    def make_warning_box(self, title, text):
-        self.warning_box.setWindowTitle(title)
-        self.warning_box.setText(text)
-        self.warning_box.exec()
-
-    def make_error_box(self, title, text):
-        self.error_box.setWindowTitle(title)
-        self.error_box.setText(text)
-        self.error_box.exec()
-
-    def make_info_box(self, title, text):
-        self.info_box.setWindowTitle(title)
-        self.info_box.setText(text)
-        self.info_box.exec()
-
-    def __call__(self, box_type, title, text):
-        if box_type == 'question':
-            return self.make_question_box(title, text)
-        elif box_type == 'warning':
-            return self.make_warning_box(title, text)
-        elif box_type == 'error':
-            return self.make_error_box(title, text)
-        elif box_type == 'info':
-            return self.make_info_box(title, text)
 
 
 class WelcomeWidget(QtWidgets.QWidget):
@@ -179,20 +130,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.contactsListWidget.itemSelectionChanged.connect(self.set_buttons_box)
 
-        self.emojiButton.clicked.connect(self.emoji_clicked)
-        self.emojiList.installEventFilter(self)
+        self.emojiButton.clicked.connect(self.emoji_button_clicked)
+        self.emojiWidget = EmojiListWidget(parent=self.emojiButton, emoji_dir_path='./ui/emoji/')
+        self.emojiWidget.emojiClicked.connect(self.emoji_clicked)
 
         self.on_start()
 
-    def emoji_clicked(self):
-        if self.emojiList.isVisible():
-            self.emojiList.hide()
+    def emoji_clicked(self, emoji_html):
+        self.messageSendTextEdit.insertHtml(emoji_html)
+
+    def emoji_button_clicked(self):
+        if self.emojiWidget.isVisible():
+            self.emojiWidget.hide()
             self.messageSendTextEdit.setFocus()
         else:
-            self.emojiList.show()
-            pos = self.emojiButton.mapToGlobal(QtCore.QPoint(self.emojiButton.x() + 20, self.emojiButton.y() + 25))
-            self.emojiList.move(pos)
-            self.emojiList.setFocus()
+            self.emojiWidget.show()
 
     def set_contacts_count_label(self, count=None):
         contacts_count = self.contactsListWidget.count() if not count else count
@@ -286,12 +238,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.user.send_presence()
         self.set_user_name(self.user.name)
 
-    # TODO: понять почему при первом клике на эмоджик лист прячется, при повторном нет (только при потере фокуса)
-    def eventFilter(self, object_, event):
-        if object_ is self.emojiList and event.type() == 9:
-            self.emojiList.hide()
-        return super().eventFilter(object_, event)
-
 
 class ClientGui:
     def __init__(self):
@@ -317,6 +263,7 @@ class ClientGui:
             self.info_boxes('error', 'error', response[ERROR])
 
 
-app = QtWidgets.QApplication(sys.argv)
-win = ClientGui()
-sys.exit(app.exec_())
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    win = ClientGui()
+    sys.exit(app.exec_())
