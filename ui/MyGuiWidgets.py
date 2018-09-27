@@ -10,11 +10,12 @@ NO_COLOR = 'white'
 class EmojiListWidget(QtWidgets.QListWidget):
     emojiClicked = QtCore.pyqtSignal(str)
 
-    _EMOJI_HTML_PATTERN = '<img src="{}" width="20" height="20">'
-
-    def __init__(self, parent=None, emoji_dir_path=None, emoji_size=(22, 22)):
+    def __init__(self, parent=None, emoji_dir_path=None, emoji_icons_size=(22, 22)):
         super().__init__(parent)
-        self.emoji_size = QtCore.QSize(*emoji_size)
+
+        self._EMOJI_HTML_PATTERN = '<img src="{}"' + 'width="{}" height="18">'.format(18, 18)
+        self._emoji_icons_size = QtCore.QSize(*emoji_icons_size)
+        self._emoji_dir_path = emoji_dir_path
 
         self.setWindowFlags(QtCore.Qt.ToolTip)
         self.setLayoutMode(QtWidgets.QListView.Batched)
@@ -22,8 +23,8 @@ class EmojiListWidget(QtWidgets.QListWidget):
         self.setFixedSize(QtCore.QSize(222, 154))
         self.setWrapping(True)
 
-        if emoji_dir_path:
-            self.buildList(emoji_dir_path)
+        if self._emoji_dir_path:
+            self.buildList(self._emoji_dir_path)
 
     def buildList(self, path=None):
         # TODO: сделать через os.path.abspath
@@ -33,7 +34,7 @@ class EmojiListWidget(QtWidgets.QListWidget):
             icon_path = emojis_paths.next()
             emoji_tool_button = QtWidgets.QToolButton(self)
             emoji_tool_button.setIcon(QtGui.QIcon(icon_path))
-            emoji_tool_button.setFixedSize(self.emoji_size)
+            emoji_tool_button.setFixedSize(self._emoji_icons_size)
             emoji_tool_button.setStyleSheet("QToolButton { border: none }")
             self._createConnection(icon_path, emoji_tool_button)
 
@@ -45,6 +46,18 @@ class EmojiListWidget(QtWidgets.QListWidget):
         emoji_button.clicked.connect(
             lambda: self.emojiClicked.emit(self._EMOJI_HTML_PATTERN.format(emoji_path))
         )
+
+    def setListSize(self, width, height):
+        self.setFixedSize(QtCore.QSize(width, height))
+
+    def setEmojiIconsSize(self, width, height):
+        self._emoji_icons_size = QtCore.QSize(width, height)
+
+    def setEmojiTextSize(self, width, height):
+        self._EMOJI_HTML_PATTERN = '<img src="{}"' + 'width="{}" height="18">'.format(width, height)
+
+    def setDirPath(self, path):
+        self._emoji_dir_path = path
 
     # TODO: понять почему при первом клике на эмоджик лист прячется, при повторном нет (только при потере фокуса)
     def focusOutEvent(self, event):
