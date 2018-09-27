@@ -4,8 +4,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from ui.MyGuiWidgets import *
 
+
 EMOJI_PATH = "./ui/emoji/"
-EMOJI_HTML_PATTERN = '<img src="{}" width="20" height="20">'
 
 
 class Ui_MainWindow(object):
@@ -55,25 +55,6 @@ class Ui_MainWindow(object):
         self.emojiButton.setIcon(QtGui.QIcon(EMOJI_PATH + "happy.png"))
         self.horizontalLayout.addWidget(self.emojiButton)
 
-        self.emojiList = QtWidgets.QListWidget(self)
-        self.emojiList.setWindowFlags(QtCore.Qt.ToolTip)
-        self.emojiList.setLayoutMode(QtWidgets.QListView.Batched)
-        self.emojiList.setViewMode(QtWidgets.QListView.IconMode)
-        self.emojiList.setFixedSize(QtCore.QSize(222, 154))
-        self.emojiList.setWrapping(True)
-
-        emojis_paths = QtCore.QDirIterator(EMOJI_PATH, {"*.png"})
-        smile_size = QtCore.QSize(22, 22)
-
-        while emojis_paths.hasNext():
-            icon_path = emojis_paths.next()
-            emoji_tool_button = QtWidgets.QToolButton(self.emojiList)  # ? parent?
-            emoji_tool_button.setIcon(QtGui.QIcon(icon_path))
-            emoji_tool_button.setFixedSize(smile_size)
-            emoji_tool_button.resize(smile_size)
-            emoji_tool_button.setStyleSheet("QToolButton { border: none }")
-            self.create_emoji(self.emojiList, icon_path, emoji_tool_button)
-
         self.messageSendTextEdit = MyTextEditWidget(self.widget)
         self.messageSendTextEdit.setObjectName("messageSendTextEdit")
         self.horizontalLayout.addWidget(self.messageSendTextEdit)
@@ -122,13 +103,6 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def create_emoji(self, list_w, emoji_path, emoji_button):
-        e_item = QtWidgets.QListWidgetItem()
-        e_item.setSizeHint(emoji_button.sizeHint())
-        list_w.addItem(e_item)
-        list_w.setItemWidget(e_item, emoji_button)
-        emoji_button.clicked.connect(lambda: self.messageSendTextEdit.insertHtml(EMOJI_HTML_PATTERN.format(emoji_path)))
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
