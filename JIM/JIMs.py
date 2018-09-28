@@ -1,7 +1,7 @@
 import json
 import time
 
-from GearMess.JIM.jim_config import *
+from JIM.jim_config import *
 
 
 class Jim:
