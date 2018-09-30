@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
-from PIL import Image
-from PIL.ImageQt import ImageQt
+
+# Form implementation generated from reading ui file '.\joinWidget.ui'
+#
+# Created by: PyQt5 UI code generator 5.11.2
+#
+# WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_joinWidget(object):
     def setupUi(self, loginWidget):
         loginWidget.setObjectName("loginWidget")
-        loginWidget.resize(351, 504)
+        loginWidget.resize(361, 520)
         self.gridLayout = QtWidgets.QGridLayout(loginWidget)
         self.gridLayout.setObjectName("gridLayout")
         self.pictureWidget = QtWidgets.QWidget(loginWidget)
@@ -17,14 +21,16 @@ class Ui_joinWidget(object):
         self.editPushButton = QtWidgets.QPushButton(self.pictureWidget)
         self.editPushButton.setObjectName("editPushButton")
         self.gridLayout_2.addWidget(self.editPushButton, 0, 0, 1, 1)
-        spacerItem = QtWidgets.QSpacerItem(147, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem, 0, 1, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_2.addItem(spacerItem1, 1, 0, 1, 1)
+        spacerItem = QtWidgets.QSpacerItem(90, 17, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_2.addItem(spacerItem, 1, 0, 1, 1)
+        spacerItem1 = QtWidgets.QSpacerItem(147, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_2.addItem(spacerItem1, 0, 2, 1, 1)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_2.addItem(spacerItem2, 0, 1, 1, 1)
         self.photoLabel = QtWidgets.QLabel(self.pictureWidget)
         self.photoLabel.setText("")
         self.photoLabel.setObjectName("photoLabel")
-        self.gridLayout_2.addWidget(self.photoLabel, 1, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.photoLabel, 1, 1, 1, 2)
         self.gridLayout.addWidget(self.pictureWidget, 0, 0, 1, 1)
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
@@ -40,8 +46,7 @@ class Ui_joinWidget(object):
         self.passwordLable.setObjectName("passwordLable")
         self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.passwordLable)
         self.passwordLineEdit = QtWidgets.QLineEdit(loginWidget)
-        self.passwordLineEdit.setInputMethodHints(
-            QtCore.Qt.ImhHiddenText | QtCore.Qt.ImhLatinOnly | QtCore.Qt.ImhNoAutoUppercase | QtCore.Qt.ImhNoPredictiveText | QtCore.Qt.ImhSensitiveData)
+        self.passwordLineEdit.setInputMethodHints(QtCore.Qt.ImhHiddenText|QtCore.Qt.ImhLatinOnly|QtCore.Qt.ImhNoAutoUppercase|QtCore.Qt.ImhNoPredictiveText|QtCore.Qt.ImhSensitiveData)
         self.passwordLineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
         self.passwordLineEdit.setClearButtonEnabled(True)
         self.passwordLineEdit.setObjectName("passwordLineEdit")
@@ -89,3 +94,4 @@ class Ui_joinWidget(object):
         self.choosePhotoButton.setText(_translate("loginWidget", "Choose Photo"))
         self.okPushButton.setText(_translate("loginWidget", "Ok"))
         self.cancelPushButton.setText(_translate("loginWidget", "Cancel"))
+
