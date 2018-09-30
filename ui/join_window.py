@@ -157,16 +157,20 @@ class EditPhoto(QtWidgets.QDialog, Ui_Dialog):
                 draw.point((i, j), (a, b, c))
         self.set_photo(self.tmp_photo)
 
-    # TODO: сделать сдвиг по осям для кропа. (+ сделать его круглым)
+    # TODO: Сделать сдвиг по осям, сейчас круг от центра.
     def crop(self):
         self.tmp_photo = self.photo.copy()
         size = self.tmp_photo.size
+        # подгоняем размер под квадрат, если убрать: неквадратное изображение станет овальным
+        size = (min(size), min(size))
         mask = self._prepare_mask(size)
+        self.tmp_photo.resize(size, Image.ANTIALIAS)
+        self.tmp_photo = ImageOps.fit(self.tmp_photo, mask.size)
         self.tmp_photo.putalpha(mask)
         self.set_photo(self.tmp_photo)
 
     def _prepare_mask(self, size):
-        mask = Image.new('L', (size[0] * 2, size[1] * 2), 0)
+        mask = Image.new('L', (size[0] * 8, size[1] * 8), 0)
         ImageDraw.Draw(mask).ellipse((0, 0) + mask.size, fill=255)
         return mask.resize(size, Image.ANTIALIAS)
 
