@@ -80,13 +80,10 @@ class Server:
                 pass
             else:
                 recipient = message[TO]
-                print(message, '-----', recipient)
                 conn = self.online_users.get(recipient)
-                print(conn)
                 if conn:
                     message_ = self.converter(message)
                     conn.send(message_)
-                    print('sended -> ', message)
                 else:
                     # TODO: в базу и ставить пометку не доставлено а при коннекте проверять есть ли не доставленные
                     # а то потеряются если сервер упадет
@@ -230,7 +227,6 @@ class ServerHandler:
 
     def handle(self, message, conn):
         message = self.converter(message)
-        print(message)
         action = message.get(ACTION)
         resp = None
         if action != AUTHORISE and action != REGISTER:
