@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 from PIL.ImageQt import ImageQt
 
 from ui.py_views.joinWidget import Ui_joinWidget
@@ -81,6 +81,8 @@ class EditPhoto(QtWidgets.QDialog, Ui_Dialog):
         self.blackAndWhitePushButton.clicked.connect(self.black_and_white)
         self.negaitvePushButton.clicked.connect(self.negative)
         self.sepiaPushButton.clicked.connect(self.sepia)
+        self.cropPushButton.clicked.connect(self.crop)
+
         self.savePushButton.clicked.connect(self.save_photo)
         self.cancelPushButton.clicked.connect(self.close)
 
@@ -154,6 +156,19 @@ class EditPhoto(QtWidgets.QDialog, Ui_Dialog):
                     c = 255
                 draw.point((i, j), (a, b, c))
         self.set_photo(self.tmp_photo)
+
+    # TODO: сделать сдвиг по осям для кропа. (+ сделать его круглым)
+    def crop(self):
+        self.tmp_photo = self.photo.copy()
+        size = self.tmp_photo.size
+        mask = self._prepare_mask(size)
+        self.tmp_photo.putalpha(mask)
+        self.set_photo(self.tmp_photo)
+
+    def _prepare_mask(self, size):
+        mask = Image.new('L', (size[0] * 2, size[1] * 2), 0)
+        ImageDraw.Draw(mask).ellipse((0, 0) + mask.size, fill=255)
+        return mask.resize(size, Image.ANTIALIAS)
 
     def save_photo(self):
         self.save_photo_signal.emit(self.tmp_photo)
