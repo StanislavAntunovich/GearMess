@@ -8,10 +8,6 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from PIL.ImageQt import ImageQt
-from PIL import Image, ImageDraw
-
-
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -53,6 +49,9 @@ class Ui_Dialog(object):
         self.blackAndWhitePushButton = QtWidgets.QPushButton(self.widget1)
         self.blackAndWhitePushButton.setObjectName("blackAndWhitePushButton")
         self.horizontalLayout_2.addWidget(self.blackAndWhitePushButton)
+        self.cropPushButton = QtWidgets.QPushButton(self.widget1)
+        self.cropPushButton.setObjectName("cropPushButton")
+        self.horizontalLayout_2.addWidget(self.cropPushButton)
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -66,3 +65,5 @@ class Ui_Dialog(object):
         self.grayPushButton.setText(_translate("Dialog", "Gray"))
         self.negaitvePushButton.setText(_translate("Dialog", "Negative"))
         self.blackAndWhitePushButton.setText(_translate("Dialog", "Black and White"))
+        self.cropPushButton.setText(_translate("Dialog", "Crop"))
+
