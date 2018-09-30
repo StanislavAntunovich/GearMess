@@ -13,7 +13,7 @@ class EmojiListWidget(QtWidgets.QListWidget):
     def __init__(self, parent=None, emoji_dir_path=None, emoji_icons_size=(22, 22)):
         super().__init__(parent)
 
-        self._EMOJI_HTML_PATTERN = '<img src="{}"' + 'width="{}" height="18">'.format(18, 18)
+        self._EMOJI_HTML_PATTERN = '<img src="{}"' + 'width="{}" height="{}">'.format(18, 20)
         self._emoji_icons_size = QtCore.QSize(*emoji_icons_size)
         self._emoji_dir_path = emoji_dir_path
 
