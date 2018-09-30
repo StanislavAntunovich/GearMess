@@ -4,9 +4,6 @@ from PIL.ImageQt import ImageQt
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from ui.py_views.editPhoto import EditPhoto
-
-
 class Ui_joinWidget(object):
     def setupUi(self, loginWidget):
         loginWidget.setObjectName("loginWidget")
