@@ -4,8 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from ui.MyGuiWidgets import *
 
-
-EMOJI_PATH = "./ui/emoji/"
+EMOJI_PATH = "ui/emoji/"
 
 
 class Ui_MainWindow(object):
@@ -14,6 +13,11 @@ class Ui_MainWindow(object):
         MainWindow.resize(997, 647)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
+        # TODO: добавить меню, понять как убирать всплывшее сообщение, как открыть основое окно по клику на сообщение
+        self.trayIcon = QtWidgets.QSystemTrayIcon()
+        self.trayIcon.setIcon(QtGui.QIcon('ui/tray_icon/dsg.png'))
+
         self.ContactsCountLabel = QtWidgets.QLabel(self.centralwidget)
         self.ContactsCountLabel.setGeometry(QtCore.QRect(700, 110, 81, 20))
         self.ContactsCountLabel.setObjectName("ContactsCountLabel")
