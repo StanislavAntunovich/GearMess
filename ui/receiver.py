@@ -19,6 +19,6 @@ class Receiver(QtCore.QThread):
             if message:
                 if message.get(MESSAGE):
                     self.new_message_signal.emit(message)
-                    self.parent().trayIcon.showMessage('New message', f'From: {message[FROM]}')
+                    self.parent().trayIcon.showMessage('GearMess \nNew message', f'From: {message[FROM]}')
                 else:
                     self.service_queue.put(message)
