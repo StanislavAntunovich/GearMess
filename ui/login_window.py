@@ -10,7 +10,7 @@ class LoginWindow(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
-        uic.loadUi('ui/ui_files/welcomeSecondWidget.ui', self)
+        uic.loadUi('ui/ui_files/loginWindow.ui', self)
 
         self.okPushButton.clicked.connect(self.ok_button_clicked)
         self.cancelPushButton.clicked.connect(self.close)

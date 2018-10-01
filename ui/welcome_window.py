@@ -1,19 +1,21 @@
-from PyQt5 import QtWidgets, QtCore, uic
+from PyQt5 import QtWidgets, QtCore, QtGui, uic
 import sys
 
 from ui.join_window import JoinWindow
 from ui.login_window import LoginWindow
 from ui.main_window import MainWindow
 from ui.MyGuiWidgets import MessageBoxes
+from ui.py_views.welcomeWindow import Ui_welcomeFirstWidget
 
 from JIM.jim_config import *
 from client_src.client import Client
 
 
-class WelcomeWidget(QtWidgets.QWidget):
+class WelcomeWidget(QtWidgets.QWidget, Ui_welcomeFirstWidget):
 
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
+        self.setupUi(self)
 
         self.info_boxes = MessageBoxes(self)
 
@@ -21,7 +23,7 @@ class WelcomeWidget(QtWidgets.QWidget):
         self.join_window = JoinWindow(self)
         self.main_window = None
 
-        uic.loadUi('ui/ui_files/welcomeFirstWidget.ui', self)
+
 
         self.loginPushButton.clicked.connect(self.login_bttn_clicked)
         self.joinPushButton.clicked.connect(self.join_bttn_clicked)
@@ -56,3 +58,10 @@ class WelcomeWidget(QtWidgets.QWidget):
                 self.close()
             elif response.get(ERROR):
                 self.info_boxes('error', 'error', response[ERROR])
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    win = WelcomeWidget()
+    win.show()
+    sys.exit(app.exec_())

@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 import time
 
 from queue import Queue
@@ -24,7 +24,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.chat_with = '#all'
 
         self.service_queue = Queue()
-        self.receiver = Receiver(self.service_queue, self.user, self)
+        self.receiver = Receiver(self.service_queue, self.user, parent=self)
         self.receiver.new_message_signal.connect(self.incoming_messages)
 
         self.infoBoxes = MessageBoxes(self)
@@ -47,6 +47,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.emojiWidget.emojiClicked.connect(self.emoji_clicked)
 
         self.on_start()
+        self.trayIcon.show()
 
     def emoji_clicked(self, emoji_html):
         self.messageSendTextEdit.insertHtml(emoji_html)
@@ -150,3 +151,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.get_contacts()
         self.user.send_presence()
         self.set_user_name(self.user.name)
+
+
+import sys
+
+sys._excepthook = sys.excepthook
+
+
+def my_exception_hook(exctype, value, traceback):
+    # Print the error and traceback
+    print(exctype, value, traceback)
+    # Call the normal Exception hook after
+    sys._excepthook(exctype, value, traceback)
+    sys.exit(1)
+
+
+# Set the exception hook to our wrapping function
+sys.excepthook = my_exception_hook
