@@ -23,8 +23,6 @@ class WelcomeWidget(QtWidgets.QWidget, Ui_welcomeFirstWidget):
         self.join_window = JoinWindow(self)
         self.main_window = None
 
-
-
         self.loginPushButton.clicked.connect(self.login_bttn_clicked)
         self.joinPushButton.clicked.connect(self.join_bttn_clicked)
 
@@ -40,7 +38,7 @@ class WelcomeWidget(QtWidgets.QWidget, Ui_welcomeFirstWidget):
     def on_cancelPushButton_clicked(self):
         sys.exit(-1)
 
-    def make_client(self, action, login, password):
+    def make_client(self, action, login, password, email=None, photo=None):
         user = Client(login)
         try:
             if action == REGISTER:
@@ -52,6 +50,7 @@ class WelcomeWidget(QtWidgets.QWidget, Ui_welcomeFirstWidget):
         else:
             if response.get(RESPONSE) == OK:
                 self.main_window = MainWindow(user)
+                user.set_personal_info(login, email, photo)
                 self.main_window.show()
                 self.login_window.close()
                 self.join_window.close()
