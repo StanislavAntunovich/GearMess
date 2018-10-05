@@ -1,5 +1,6 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, or_
+from PIL import Image
 
 from client_src.client_models import *
 from JIM.jim_config import *
@@ -66,9 +67,9 @@ class ClientStorageHandler:
         self.session.commit()
 
     # пока выгружает всю историю - добавить выгрузку по дням/ часам
-    def messages_history(self, contact, counted_period=None, period='day'):
+    def messages_history(self, contact):
         messages_history = []
-        messages = self.session.query(MessagesHistory).\
+        messages = self.session.query(MessagesHistory). \
             filter(or_(MessagesHistory.from_contact == contact,
                        MessagesHistory.to_contact == contact)).all()
         for message_ in messages:
@@ -81,9 +82,7 @@ class ClientStorageHandler:
                     {TIME: message_.message_created, FROM: self.name, MESSAGE: message_.message})
         return messages_history
 
-    def add_to_ignore(self, name):
-        ignored_contact = IgnoreList(name)
-        self.session.a
-
-
-
+    def add_personal_info(self, login, email=None, photo=None):
+        user = PersonalInfo(login, email, photo)
+        self.session.add(user)
+        self.session.commit()
