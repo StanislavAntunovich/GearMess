@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, BLOB
 from sqlalchemy.ext.declarative import declarative_base
 
 Model = declarative_base()
@@ -38,3 +38,16 @@ class MessagesHistory(Model):
         self.to_contact = to_contact
         if message_created:
             self.message_created = str(message_created)
+
+
+#TODO: добавить больше персональной информации
+class PersonalInfo(Model):
+    __tablename__ = 'personal_info'
+    login = Column(String, primary_key=True)
+    email = Column(String, nullable=True)
+    photo = Column(BLOB, nullable=True)
+
+    def __init__(self, login, email=None, photo=None):
+        self.login = login
+        self.email = email
+        self.photo = photo
