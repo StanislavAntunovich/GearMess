@@ -115,9 +115,11 @@ class Client:
         message_to_send = self.converter(message_)
         self.soc.send(message_to_send)
 
-    # TODO: заменить количество на период
-    def get_messages_history(self, contact_name, count=5):
+    def get_messages_history(self, contact_name):
         return self.storage_handler.messages_history(contact_name)
+
+    def set_personal_info(self, login, email=None, photo=None):
+        self.storage_handler.add_personal_info(login, email, photo)
 
 
 
