@@ -36,9 +36,11 @@ class Client:
         authorisation = self.converter(authorisation_)
         self.soc.send(authorisation)
         serv_answ = self.receive()[ALERT]
+
         key = make_password(self.salt, password)
         answ = crypt_message(key, serv_answ)
-        answer = self.message_maker.create(action=AUTHORISE, answer=answ)
+
+        answer = self.message_maker.create(action=ANSWER, answer=answ)
         answer = self.converter(answer)
         self.soc.send(answer)
         resp = self.receive()
