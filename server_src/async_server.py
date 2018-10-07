@@ -25,14 +25,16 @@ class ServerHandlerProtocol(asyncio.Protocol):
     def connection_made(self, transport):
         self.transport = transport
 
+    # TODO: понять как работает transport closed
     def connection_lost(self, exc):
         if isinstance(exc, ConnectionResetError):
-            client = self.connections.pop(self.transport)
-            del self.online_connections[client]
+            # client = self.connections.pop(self.transport)
+            # del self.online_connections[client]
             self.authorised_connections.remove(self.transport)
 
     def data_received(self, data):
         if data:
+            print(self.converter(data))
             self.message_handle_router(data, self.transport)
 
     def message_handle_router(self, data, transport):
@@ -55,7 +57,7 @@ class ServerHandlerProtocol(asyncio.Protocol):
             resp = self.del_contact(message[USER], message[CONTACT])
 
         elif action == AUTHORISE:
-            self.authorise(transport)
+            self.authorise(transport, message[USER])
         elif action == ANSWER:
             resp = self.answer(message, transport)
 
@@ -105,11 +107,15 @@ class ServerHandlerProtocol(asyncio.Protocol):
         response = self.message_maker.create(response=resp, alert=alert)
         return response
 
-    def authorise(self, transport):
-        self.transport_auth_word[transport] = b64encode(urandom(32)).decode('utf-8')
-        request = self.message_maker.create(response=OK, alert=self.transport_auth_word[transport])
-        request = self.converter(request)
-        transport.write(request)
+    # TODO: доработать - отправлять респ о том что юзер уже онлайн
+    def authorise(self, transport, user):
+        if user not in self.online_connections:
+            self.transport_auth_word[transport] = b64encode(urandom(32)).decode('utf-8')
+            request = self.message_maker.create(response=OK, alert=self.transport_auth_word[transport])
+            request = self.converter(request)
+            transport.write(request)
+        else:
+            transport.close()
 
     def answer(self, message, transport):
         answ = message[ANSWER]
