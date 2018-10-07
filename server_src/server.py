@@ -113,7 +113,6 @@ class Server:
                 if message:
                     self.handler.handle(message, conn)
 
-
     def run(self):
         """ To start server_src working. """
         self._is_alive = True
@@ -178,7 +177,8 @@ class ServerHandler:
     def get_contacts(self, user):
         quantity = self.storage_handler.count_contacts(user)
         contact_list = self.storage_handler.get_contacts(user)
-        resp_ = self.responder.create(action=CONTACT_LIST, quantity=quantity, contact_list=contact_list)
+        resp_ = self.responder.create(
+            action=CONTACT_LIST, quantity=quantity, contact_list=contact_list)
         return resp_
 
     def add_contact(self, user, contact):
@@ -227,6 +227,7 @@ class ServerHandler:
 
     def handle(self, message, conn):
         message = self.converter(message)
+
         action = message.get(ACTION)
         resp = None
         if action != AUTHORISE and action != REGISTER:
