@@ -9,13 +9,11 @@ from server_src.user_exceptions import *
 from server_src.models import Base
 
 
-# TODO: убрать все респонсы от сюда, перенести их на сервер
 # разбить на отдельные классы обработки контактов и истории подключений и сообщений
 
 class StorageHandler:
     def __init__(self, session_):
         self.session = session_
-
 
     def registration(self, client_name, password):
         """ For now just adding user in db (table Client)
@@ -142,5 +140,3 @@ class StorageHandler:
     #     else:
     #         # TODO: raise User not in chat
     #         pass
-
-
