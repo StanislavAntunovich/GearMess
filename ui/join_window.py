@@ -9,7 +9,7 @@ from JIM.jim_config import *
 
 
 class JoinWindow(QtWidgets.QDialog, Ui_joinWidget):
-    ok_button_signal = QtCore.pyqtSignal(str, str, str, str, bytes)
+    ok_button_signal = QtCore.pyqtSignal(str, str, str, str)
 
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
@@ -29,11 +29,11 @@ class JoinWindow(QtWidgets.QDialog, Ui_joinWidget):
         login = self.loginLineEdit.text()
         password = self.passwordLineEdit.text()
         email = self.emailLineEdit.text()
-        img = self.profile_photo.tobytes('raw')
+        img = self.profile_photo.tobytes('raw') if self.profile_photo else None
 
         # генерируем сигнал для welcome_window
         if login and password:
-            self.ok_button_signal.emit(REGISTER, login, password, email, img)
+            self.ok_button_signal.emit(REGISTER, login, password, email)
             self.passwordLineEdit.clear()
         else:
             self.parent().info_boxes('info', 'not enough info', 'please fill fields')
