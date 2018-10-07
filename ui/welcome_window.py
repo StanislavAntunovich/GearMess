@@ -50,7 +50,7 @@ class WelcomeWidget(QtWidgets.QWidget, Ui_welcomeFirstWidget):
         else:
             if response.get(RESPONSE) == OK:
                 self.main_window = MainWindow(user)
-                user.set_personal_info(login, email, photo)
+                # user.set_personal_info(login, email, photo)
                 self.main_window.show()
                 self.login_window.close()
                 self.join_window.close()
