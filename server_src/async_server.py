@@ -6,9 +6,7 @@ from JIM.jim_config import *
 from JIM.JIMs import *
 
 from server_src.user_exceptions import *
-# from server_src.models import my_session
 from server_src.mongo_db.mongo_handlers import StorageHandler
-# from server_src.handlers import StorageHandler
 
 from crypto.crypto import *
 
@@ -20,7 +18,6 @@ class ServerHandlerProtocol(asyncio.Protocol):
         self.online_connections = online_
 
         self.storage_handler = StorageHandler()
-        # self.storage_handler = StorageHandler(my_session)
         self.converter = MessageConverter()
         self.message_maker = Jim()
         self.transport_auth_word = {}
