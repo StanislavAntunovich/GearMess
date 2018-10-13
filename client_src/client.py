@@ -6,7 +6,7 @@ from JIM.jim_config import *
 from client_src.client_storage_handler import ClientStorageHandler
 from crypto.crypto import *
 
-BUF_SIZE = 1024
+BUF_SIZE = 6000
 ADDR = 'localhost'
 PORT = 7777
 
@@ -27,7 +27,7 @@ class Client:
         """ Making socket and connecting to server_src"""
         self.soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.soc.connect(self.address)
-        self.soc.settimeout(1)
+        self.soc.settimeout(0.1)
 
     def send_authorisation(self, password):
         """ Sending authorisation-message to server_src, returns received response """
@@ -35,7 +35,8 @@ class Client:
         authorisation_ = self.message_maker.create(action=AUTHORISE)
         authorisation = self.converter(authorisation_)
         self.soc.send(authorisation)
-        serv_answ = self.receive()[ALERT]
+
+        serv_answ = self.receive()[ALERT]  # TODO: добавить сюда ожидание события
 
         key = make_password(self.salt, password)
         answ = crypt_message(key, serv_answ)
