@@ -27,8 +27,9 @@ class Client:
         """ Making socket and connecting to server_src"""
         self.soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.soc.connect(self.address)
-        self.soc.settimeout(0.1)
+        self.soc.settimeout(1)
 
+    # TODO: поубирать receive из авторизации и регистрации -> перенести в welcomeWindow -> разбить методы
     def send_authorisation(self, password):
         """ Sending authorisation-message to server_src, returns received response """
         self.connect_to_server()
@@ -36,7 +37,7 @@ class Client:
         authorisation = self.converter(authorisation_)
         self.soc.send(authorisation)
 
-        serv_answ = self.receive()[ALERT]  # TODO: добавить сюда ожидание события
+        serv_answ = self.receive()[ALERT]
 
         key = make_password(self.salt, password)
         answ = crypt_message(key, serv_answ)
@@ -88,6 +89,7 @@ class Client:
         msg = self.message_maker.create(action=PRESENCE)
         msg = self.converter(msg)
         self.soc.send(msg)
+        self.soc.settimeout(0.1)
 
     def receive(self):
         """ Receiving message from server_src, checking for message-action,

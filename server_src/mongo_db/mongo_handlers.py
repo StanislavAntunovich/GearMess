@@ -70,8 +70,7 @@ class StorageHandler:
         for message in messages_:
             message.pop('_id')
             message.pop(DELIVERED)
-            yield message
-        # return messages_
+        return messages_
 
 
 if __name__ == '__main__':

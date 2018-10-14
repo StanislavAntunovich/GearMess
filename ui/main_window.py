@@ -153,3 +153,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.get_contacts()
         self.user.send_presence()
         self.set_user_name(self.user.name)
+
+import sys
+sys._excepthook = sys.excepthook
+def my_exception_hook(exctype, value, traceback):
+    # Print the error and traceback
+    print(exctype, value, traceback)
+    # Call the normal Exception hook after
+    sys._excepthook(exctype, value, traceback)
+    sys.exit(1)
+# Set the exception hook to our wrapping function
+sys.excepthook = my_exception_hook

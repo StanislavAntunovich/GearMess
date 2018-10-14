@@ -25,9 +25,11 @@ class Jim:
 class JimAction(Jim):
     def __init__(self, name=None):
         super().__init__(name)
-        self.actions = {ADD_CONTACT: self.add_contact, DEL_CONTACT: self.del_contact, GET_CONTACTS: self.get_contacts,
-                        AUTHORISE: self.authorise, REGISTER: self.register, MSG: self.message_to, QUIT: self.quit,
-                        SYNC: self.sync, PRESENCE: self.presence, CONTACT_LIST: self.contact_list, ANSWER: self.answer}
+        self.actions = {
+            ADD_CONTACT: self.add_contact, DEL_CONTACT: self.del_contact, GET_CONTACTS: self.get_contacts,
+            AUTHORISE: self.authorise, REGISTER: self.register, MSG: self.message_to, QUIT: self.quit,
+            SYNC: self.sync, PRESENCE: self.presence, CONTACT_LIST: self.contact_list, ANSWER: self.answer
+        }
 
     def make(self, action, time_=None):
         message = super()._make_dict()

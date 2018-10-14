@@ -13,6 +13,7 @@ TIME = 'time'
 TO = 'to'
 FROM = 'from'
 MESSAGE = 'message'
+MESSAGES = 'messages'
 QUANTITY = 'quantity'
 
 
@@ -31,6 +32,7 @@ REGISTER = 'register'
 MSG = 'msg'
 QUIT = 'quit'
 SYNC = 'synchronize'
+UNDELIVERED = 'undelivered'
 
 UNKNOWN_ACTION = 'unknown_action'
 

@@ -1,6 +1,7 @@
 import asyncio
 from os import urandom
 from time import sleep
+from threading import Thread
 
 from JIM.jim_config import *
 from JIM.JIMs import *
@@ -71,15 +72,21 @@ class ServerHandlerProtocol(asyncio.Protocol):
             response = self.converter(resp)
             transport.write(response)
 
-    # TODO: доставка неотправленных сообщений
     def presence(self, user, transport):
         self.storage_handler.presence(user, transport.get_extra_info('sockname')[0])
         self.online_connections.update({user: transport})
         self.connections.update({transport: user})
+
         undelivered = self.storage_handler.get_undelivered(user)
-        for message in undelivered:
-            transport.write(self.converter(message))
-            sleep(0.11)  # TODO: подумать как изменить, блокирует пока все не доставит
+        # TODO: придумать как исправить эти костыли
+        if undelivered:
+            thread = Thread(target=self.send_undelivered, args=(undelivered, transport))
+            thread.start()
+
+    def send_undelivered(self, undelivered, transport):
+        for i in undelivered:
+            transport.write(self.converter(i))
+            sleep(0.12)
 
     def get_contacts(self, user):
         quantity = self.storage_handler.count_contacts(user)
