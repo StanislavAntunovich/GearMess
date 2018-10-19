@@ -35,7 +35,6 @@ class ServerHandlerProtocol(asyncio.Protocol):
 
     def data_received(self, data):
         if data:
-            print(self.converter(data))
             self.message_handle_router(data, self.transport)
 
     def message_handle_router(self, data, transport):
@@ -150,7 +149,6 @@ class ServerHandlerProtocol(asyncio.Protocol):
         resp = self.message_maker.create(response=WRONG_REQUEST, alert=UNKNOWN_ACTION)
         return resp
 
-    # TODO: доставка сообщения если клиент не онлайн
     def income_message(self, message):
         if not message[TO].startswith('#'):
             if message[TO] in self.online_connections:
