@@ -12,7 +12,7 @@ PORT = 7777
 
 
 class Client:
-    def __init__(self, name, addr='localhost', port=7777):
+    def __init__(self, name, addr='151.248.121.11', port=6666):
         self.name = name
         self.address = addr, port
         self.soc = None

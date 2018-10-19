@@ -144,6 +144,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def closeEvent(self, event):
         self.receiver.on_line = False
         self.hide()
+        self.trayIcon.hide()
         self.receiver.wait(500)
         self.user.quit_server()
         event.accept()
