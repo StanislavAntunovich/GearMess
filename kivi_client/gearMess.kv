@@ -2,15 +2,19 @@
     id: 'ok'
     text: 'Ok'
 
+
 <CancelButton@Button>:
     id: 'cancel'
     text: 'Cancel'
 
+
 <LoginLabel@Label>:
     text: 'Login: '
 
+
 <PasswordLabel@Label>:
     text: 'Password'
+
 
 <JoinScreen@Screen>:
     AnchorLayout:
@@ -32,9 +36,10 @@
                 password: True
 
             OkButton:
-                on_press: root.parent.ok_pressed(root.ids.login_input.text, root.ids.password_input.text, 'join')
+                on_press: root.parent.ok_pressed(login_input.text, password_input.text, 'join')
             CancelButton:
                 on_press: root.parent.current = 'welcome'
+
 
 <SManager>:
     Screen:
@@ -77,7 +82,7 @@
                     password: True
 
                 OkButton:
-                    on_press: root.ok_pressed('login')
+                    on_press: root.ok_pressed(login_input.text, password_input.text, 'login')
                 CancelButton:
                     on_press: root.current = 'welcome'
 
