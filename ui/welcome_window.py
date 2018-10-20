@@ -13,7 +13,11 @@ from client_src.client import Client
 
 class WelcomeWidget(QtWidgets.QWidget, Ui_welcomeFirstWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, host, port, buff_size, parent=None):
+        self.host = host
+        self.port = port
+        self.buff_size = buff_size
+
         QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
 
@@ -39,7 +43,7 @@ class WelcomeWidget(QtWidgets.QWidget, Ui_welcomeFirstWidget):
         sys.exit(-1)
 
     def make_client(self, action, login, password, email=None, photo=None):
-        user = Client(login)
+        user = Client(login, self.host, self.port, self.buff_size)
         try:
             if action == REGISTER:
                 response = user.send_registration(password)

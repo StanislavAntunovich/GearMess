@@ -7,14 +7,14 @@ from client_src.client_storage_handler import ClientStorageHandler
 from crypto.crypto import *
 
 BUF_SIZE = 6000
-ADDR = 'localhost'
-PORT = 7777
+
 
 
 class Client:
-    def __init__(self, name, addr='151.248.121.11', port=6666):
+    def __init__(self, name, host, port, buff_size):
         self.name = name
-        self.address = addr, port
+        self.address = host, port
+        self.buff_size = buff_size
         self.soc = None
         # TODO: при регистрации генерировать соль и записывать в базу или файл
         self.salt = b'e690a758702ee2f78e4ae5d1327f52d246c82a6eda3648d25c3806142717e5d3'
@@ -95,7 +95,7 @@ class Client:
         """ Receiving message from server_src, checking for message-action,
          if so - returns  string in format SENDER'S_NAME: MESSAGE."""
         try:
-            mess = self.soc.recv(BUF_SIZE)
+            mess = self.soc.recv(self.buff_size)
         except socket.timeout:
             pass
         else:
