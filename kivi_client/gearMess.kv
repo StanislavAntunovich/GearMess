@@ -1,0 +1,90 @@
+<OkButton@Button>:
+    id: 'ok'
+    text: 'Ok'
+
+<CancelButton@Button>:
+    id: 'cancel'
+    text: 'Cancel'
+
+<LoginLabel@Label>:
+    text: 'Login: '
+
+<PasswordLabel@Label>:
+    text: 'Password'
+
+<JoinScreen@Screen>:
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        GridLayout:
+            spacing: 9
+            size_hint: [.9, .3]
+            rows: 3
+            cols: 2
+
+            LoginLabel
+            TextInput:
+                id: login_input
+
+            PasswordLabel
+            TextInput:
+                id: password_input
+                password: True
+
+            OkButton:
+                on_press: root.parent.ok_pressed(root.ids.login_input.text, root.ids.password_input.text, 'join')
+            CancelButton:
+                on_press: root.parent.current = 'welcome'
+
+<SManager>:
+    Screen:
+        name: 'welcome'
+        AnchorLayout:
+            anchor_x: 'center'
+            anchor_y: 'center'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: [.7, .9]
+                padding: 10
+                spacing: 5
+                Button:
+                    background_color: [.20, .28, 1, 1]
+                    background_normal: ''
+                    text: 'Login'
+                    on_press: root.current = 'login'
+                Button:
+                    text: 'Join'
+                    on_press: root.current = 'join'
+
+    Screen:
+        name: 'login'
+        AnchorLayout:
+            anchor_x: 'center'
+            anchor_y: 'center'
+            GridLayout:
+                spacing: 9
+                size_hint: [.9, .3]
+                rows: 3
+                cols: 2
+
+                LoginLabel
+                TextInput:
+                    id: login_input
+
+                PasswordLabel
+                TextInput:
+                    id: password_input
+                    password: True
+
+                OkButton:
+                    on_press: root.ok_pressed('login')
+                CancelButton:
+                    on_press: root.current = 'welcome'
+
+    JoinScreen:
+        name: 'join'
+
+
+
+
+
