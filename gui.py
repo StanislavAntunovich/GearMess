@@ -4,6 +4,8 @@ import sys
 from ui.welcome_window import WelcomeWidget
 
 
+# TODO: добавить config и считывать настройки configparser'ом
+# TODO: добавить функцию задания настроек соединения которые будут считываться из config
 HOST = '151.248.121.11'
 PORT = 6666
 BUFFER = 4048
