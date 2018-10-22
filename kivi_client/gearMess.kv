@@ -1,10 +1,8 @@
 <OkButton@Button>:
-    id: 'ok'
     text: 'Ok'
 
 
 <CancelButton@Button>:
-    id: 'cancel'
     text: 'Cancel'
 
 
@@ -13,36 +11,47 @@
 
 
 <PasswordLabel@Label>:
-    text: 'Password'
+    text: 'Password: '
 
 
-<JoinScreen@Screen>:
+<UserInfoScreen@Screen>:
     AnchorLayout:
         anchor_x: 'center'
         anchor_y: 'center'
-        GridLayout:
-            spacing: 9
-            size_hint: [.9, .3]
-            rows: 3
-            cols: 2
 
-            LoginLabel
-            TextInput:
-                id: login_input
+        BoxLayout:
+            size_hint: [.8, .8]
+            orientation: 'vertical'
+            spacing: 5
+            Widget
+            GridLayout:
+                rows: 2
+                cols: 2
+                LoginLabel:
+                    size_hint: [.6, 1]
+                TextInput:
+                    id: login_input
+                PasswordLabel:
+                    size_hint: [.6, 1]
+                TextInput:
+                    id: password_input
+                    password: True
+            Widget
+            BoxLayout:
+                size_hint: [1, .4]
+                orientation: 'horizontal'
+                OkButton:
+                    on_press: root.parent.ok_pressed(login_input.text, password_input.text, root.parent.action)
+                CancelButton:
+                    on_press: root.parent.current = 'welcome'; login_input.text=''; password_input.text=''
 
-            PasswordLabel
-            TextInput:
-                id: password_input
-                password: True
 
-            OkButton:
-                on_press: root.parent.ok_pressed(login_input.text, password_input.text, 'join')
-            CancelButton:
-                on_press: root.parent.current = 'welcome'
 
 
 <SManager>:
+    action: ''
     Screen:
+        id: welcome
         name: 'welcome'
         AnchorLayout:
             anchor_x: 'center'
@@ -56,40 +65,50 @@
                     background_color: [.20, .28, 1, 1]
                     background_normal: ''
                     text: 'Login'
-                    on_press: root.current = 'login'
+                    on_press: root.current = 'user_info'; root.action = 'login'
                 Button:
                     text: 'Join'
-                    on_press: root.current = 'join'
-
-    Screen:
-        name: 'login'
-        AnchorLayout:
-            anchor_x: 'center'
-            anchor_y: 'center'
-            GridLayout:
-                spacing: 9
-                size_hint: [.9, .3]
-                rows: 3
-                cols: 2
-
-                LoginLabel
-                TextInput:
-                    id: login_input
-
-                PasswordLabel
-                TextInput:
-                    id: password_input
-                    password: True
-
-                OkButton:
-                    on_press: root.ok_pressed(login_input.text, password_input.text, 'login')
-                CancelButton:
-                    on_press: root.current = 'welcome'
-
-    JoinScreen:
-        name: 'join'
+                    on_press: root.current = 'user_info'; root.action = 'join'
 
 
+    UserInfoScreen:
+        name: 'user_info'
 
+
+<MainScreen@Screen>:
+    id: main_screen_s
+    GridLayout:
+        padding: 20
+        spacing: 5
+        rows: 3
+        cols: 2
+        BoxLayout:
+            spacing: 10
+
+            orientation: 'horizontal'
+            BoxLayout:
+                spacing: 5
+                orientation: 'vertical'
+                Button:
+                    size_hint: (1, .3)
+                    text: '1'
+                Button:
+                    text: '2'
+                Button:
+                    size_hint: (1, .3)
+                    text: '3'
+            BoxLayout:
+                spacing: 5
+                size_hint: (.6, 1)
+                orientation: 'vertical'
+                Button:
+                    size_hint: (1, .3)
+
+                    text: '4'
+                Button:
+                    text: '5'
+                Button:
+                    size_hint: (1, .3)
+                    text: '6'
 
 
