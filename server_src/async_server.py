@@ -35,7 +35,6 @@ class ServerHandlerProtocol(asyncio.Protocol):
 
     def data_received(self, data):
         if data:
-            print(self.converter(data))
             self.message_handle_router(data, self.transport)
 
     def message_handle_router(self, data, transport):

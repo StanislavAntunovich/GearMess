@@ -1,3 +1,6 @@
+#: import ListItemButton kivy.uix.listview.ListItemButton
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+
 <OkButton@Button>:
     text: 'Ok'
 
@@ -25,6 +28,7 @@
             spacing: 5
             Widget
             GridLayout:
+                size_hint: [1, .5]
                 rows: 2
                 cols: 2
                 LoginLabel:
@@ -41,15 +45,20 @@
                 size_hint: [1, .4]
                 orientation: 'horizontal'
                 OkButton:
-                    on_press: root.parent.ok_pressed(login_input.text, password_input.text, root.parent.action)
+                    on_press: app.root.make_client(login_input.text, password_input.text)
                 CancelButton:
-                    on_press: root.parent.current = 'welcome'; login_input.text=''; password_input.text=''
-
-
+                    on_press: app.root.current = 'welcome'; login_input.text=''; password_input.text=''
 
 
 <SManager>:
     action: ''
+    main_action: self.action
+
+    chat_with: '#all'
+    messages: ['']
+
+    contacts: contacts_list
+
     Screen:
         id: welcome
         name: 'welcome'
@@ -65,50 +74,74 @@
                     background_color: [.20, .28, 1, 1]
                     background_normal: ''
                     text: 'Login'
-                    on_press: root.current = 'user_info'; root.action = 'login'
+                    on_press: root.current = 'user_info'; root.action = self.text
                 Button:
                     text: 'Join'
-                    on_press: root.current = 'user_info'; root.action = 'join'
-
+                    on_press: root.current = 'user_info'; root.action = self.text
 
     UserInfoScreen:
         name: 'user_info'
 
+    Screen:
+        id: main_screen
+        name: 'main_screen'
+        GridLayout:
+            padding: 20
+            spacing: 5
+            rows: 3
+            cols: 2
 
-<MainScreen@Screen>:
-    id: main_screen_s
-    GridLayout:
-        padding: 20
-        spacing: 5
-        rows: 3
-        cols: 2
-        BoxLayout:
-            spacing: 10
-
-            orientation: 'horizontal'
             BoxLayout:
-                spacing: 5
-                orientation: 'vertical'
-                Button:
-                    size_hint: (1, .3)
-                    text: '1'
-                Button:
-                    text: '2'
-                Button:
-                    size_hint: (1, .3)
-                    text: '3'
-            BoxLayout:
-                spacing: 5
-                size_hint: (.6, 1)
-                orientation: 'vertical'
-                Button:
-                    size_hint: (1, .3)
+                spacing: 10
+                orientation: 'horizontal'
+                BoxLayout:
+                    spacing: 5
+                    orientation: 'vertical'
 
-                    text: '4'
-                Button:
-                    text: '5'
-                Button:
-                    size_hint: (1, .3)
-                    text: '6'
+                    Label:
+                        id: _chat_with
+                        size_hint: (1, .3)
+                        text: root.chat_with
 
+                    ListView:
+                        id: messages_screen
+                        item_strings: root.messages
+
+                    BoxLayout:
+                        size_hint: (1, .3)
+                        padding: 0, 7
+                        spacing: 3
+
+                        TextInput:
+                            id: message_to_send
+                            size_hint: (1, .5)
+                        Button:
+                            id: send_message
+                            size_hint: (.3, .5)
+                            text: 'Send'
+
+                BoxLayout:
+                    spacing: 5
+                    size_hint: (.6, 1)
+                    orientation: 'vertical'
+
+                    BoxLayout:
+                        padding: 0, 12
+                        spacing: 3
+                        size_hint: (1, .3)
+                        TextInput:
+                            id: contact_to_add
+                            size_hint: (1, .5)
+                        Button:
+                            id: add_contact_bttn
+                            size_hint: (.3, .5)
+                            text: 'Add'
+
+                            on_press: app.root.add_contact(contact_to_add.text)
+
+                    ListView:
+                        id: contacts_list
+
+                    Label:
+                        size_hint: (1, .3)
 
