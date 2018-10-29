@@ -46,7 +46,6 @@ class WelcomeWidget(QtWidgets.QWidget, Ui_welcomeFirstWidget):
             else:
                 response = user.send_authorisation(password)
         except WindowsError as e:
-            print(e)
             self.info_boxes('error', 'error', 'no connection to server')
         else:
             if response.get(RESPONSE) == OK:
