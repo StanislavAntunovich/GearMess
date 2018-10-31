@@ -1,0 +1,156 @@
+#: import ListItemButton kivy.uix.listview.ListItemButton
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+
+<OkButton@Button>:
+    text: 'Ok'
+
+
+<CancelButton@Button>:
+    text: 'Cancel'
+
+
+<LoginLabel@Label>:
+    text: 'Login: '
+
+
+<PasswordLabel@Label>:
+    text: 'Password: '
+
+
+<UserInfoScreen@Screen>:
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+
+        BoxLayout:
+            size_hint: [.8, .8]
+            orientation: 'vertical'
+            spacing: 5
+            Widget
+            GridLayout:
+                size_hint: [1, .5]
+                rows: 2
+                cols: 2
+                LoginLabel:
+                    size_hint: [.6, 1]
+                TextInput:
+                    id: login_input
+                PasswordLabel:
+                    size_hint: [.6, 1]
+                TextInput:
+                    id: password_input
+                    password: True
+            Widget
+            BoxLayout:
+                size_hint: [1, .4]
+                orientation: 'horizontal'
+                OkButton:
+                    on_press: app.root.make_client(login_input.text, password_input.text)
+                CancelButton:
+                    on_press: app.root.current = 'welcome'; login_input.text=''; password_input.text=''
+
+
+<SManager>:
+    action: ''
+    main_action: self.action
+
+    chat_with: '#all'
+    messages: ['']
+
+    contacts: contacts_list
+
+    Screen:
+        id: welcome
+        name: 'welcome'
+        AnchorLayout:
+            anchor_x: 'center'
+            anchor_y: 'center'
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: [.7, .9]
+                padding: 10
+                spacing: 5
+                Button:
+                    background_color: [.20, .28, 1, 1]
+                    background_normal: ''
+                    text: 'Login'
+                    on_press: root.current = 'user_info'; root.action = self.text
+                Button:
+                    text: 'Join'
+                    on_press: root.current = 'user_info'; root.action = self.text
+
+    UserInfoScreen:
+        name: 'user_info'
+
+    Screen:
+        id: main_screen
+        name: 'main_screen'
+        GridLayout:
+            padding: 20
+            spacing: 5
+            rows: 3
+            cols: 2
+
+            BoxLayout:
+                spacing: 10
+                orientation: 'horizontal'
+                BoxLayout:
+                    spacing: 5
+                    orientation: 'vertical'
+
+                    Label:
+                        id: _chat_with
+                        size_hint: (1, .3)
+                        text: root.chat_with
+
+                    ListView:
+                        id: messages_screen
+                        item_strings: root.messages
+
+                    BoxLayout:
+                        size_hint: (1, .3)
+                        padding: 0, 7
+                        spacing: 3
+
+                        TextInput:
+                            id: message_to_send
+                            size_hint: (1, .5)
+                        Button:
+                            id: send_message_bttn
+                            size_hint: (.3, .5)
+                            text: 'Send'
+                            on_press: app.root.send_message(message_to_send.text); message_to_send.text = ''
+
+                BoxLayout:
+                    spacing: 5
+                    size_hint: (.6, 1)
+                    orientation: 'vertical'
+
+                    BoxLayout:
+                        padding: 0, 12
+                        spacing: 3
+                        size_hint: (1, .3)
+                        TextInput:
+                            id: contact_to_add
+                            size_hint: (1, .5)
+                        Button:
+                            id: add_contact_bttn
+                            size_hint: (.3, .5)
+                            text: 'Add'
+
+                            on_press: app.root.add_contact(contact_to_add.text); contact_to_add.text = ''
+
+                    ListView:
+                        id: contacts_list
+
+
+                    BoxLayout:
+                        size_hint: (1, .3)
+                        padding: 0, 7
+                        spacing: 3
+                        Button:
+                            id: delete_contact_bttn
+                            size_hint: (1, .5)
+                            text: 'Delete'
+                            on_press: app.root.del_contact()
+
